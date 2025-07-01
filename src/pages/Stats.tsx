@@ -1,12 +1,13 @@
 
-import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ArrowLeft, Calendar, Clock, TrendingUp, Award } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
+import { useStats } from '@/hooks/useStats';
 
 interface StatEntry {
+  id: string;
   timestamp: string;
   date: string;
   time: string;
@@ -14,20 +15,15 @@ interface StatEntry {
 }
 
 const Stats = () => {
-  const [stats, setStats] = useState<StatEntry[]>([]);
-  const [totalCount, setTotalCount] = useState(0);
+  const { stats, totalCount, isLoading } = useStats();
 
-  useEffect(() => {
-    const savedStats = localStorage.getItem('alina-stats');
-    const savedCount = localStorage.getItem('alina-counter');
-    
-    if (savedStats) {
-      setStats(JSON.parse(savedStats));
-    }
-    if (savedCount) {
-      setTotalCount(parseInt(savedCount));
-    }
-  }, []);
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-indigo-600 via-purple-500 to-pink-500 flex items-center justify-center">
+        <div className="text-white text-xl">Загрузка статистики...</div>
+      </div>
+    );
+  }
 
   // Группировка по дням
   const dailyStats = stats.reduce((acc, entry) => {
@@ -263,8 +259,8 @@ const Stats = () => {
               ⏰ Последние путаницы
             </h3>
             <div className="space-y-3 max-h-64 overflow-y-auto">
-              {stats.slice(-10).reverse().map((entry, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+              {stats.slice(0, 10).map((entry, index) => (
+                <div key={entry.id} className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
                   <div className="text-white">
                     <p className="font-medium">#{entry.count}</p>
                     <p className="text-sm opacity-70">

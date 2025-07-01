@@ -9,7 +9,51 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      alina_counter: {
+        Row: {
+          id: string
+          total_count: number
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          total_count?: number
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          total_count?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      alina_stats: {
+        Row: {
+          count: number
+          created_at: string
+          date: string
+          id: string
+          time: string
+          timestamp: string
+        }
+        Insert: {
+          count: number
+          created_at?: string
+          date?: string
+          id?: string
+          time?: string
+          timestamp?: string
+        }
+        Update: {
+          count?: number
+          created_at?: string
+          date?: string
+          id?: string
+          time?: string
+          timestamp?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

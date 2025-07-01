@@ -1,40 +1,28 @@
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { BarChart3, TrendingUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useCounter } from '@/hooks/useCounter';
 
 const Index = () => {
-  const [count, setCount] = useState(0);
+  const { count, isLoading, incrementCounter } = useCounter();
   const [isPressed, setIsPressed] = useState(false);
 
-  useEffect(() => {
-    const savedCount = localStorage.getItem('alina-counter');
-    if (savedCount) {
-      setCount(parseInt(savedCount));
-    }
-  }, []);
-
-  const handleClick = () => {
-    const newCount = count + 1;
-    setCount(newCount);
-    localStorage.setItem('alina-counter', newCount.toString());
-    
-    // Сохраняем статистику с временной меткой
-    const stats = JSON.parse(localStorage.getItem('alina-stats') || '[]');
-    const now = new Date();
-    stats.push({
-      timestamp: now.toISOString(),
-      date: now.toDateString(),
-      time: now.toTimeString().split(' ')[0],
-      count: newCount
-    });
-    localStorage.setItem('alina-stats', JSON.stringify(stats));
-    
+  const handleClick = async () => {
+    await incrementCounter();
     setIsPressed(true);
     setTimeout(() => setIsPressed(false), 200);
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-600 via-pink-500 to-red-500 flex items-center justify-center">
+        <div className="text-white text-xl">Загрузка...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-600 via-pink-500 to-red-500 flex flex-col">
